@@ -13,6 +13,9 @@ body {
 }
 
 img {
+    width: 80%; /* Set width to 80% of the parent container */
+    display: block; /* Ensures it behaves like a block element */
+    margin: 0 auto; /* Centers the image horizontally */
     border: 0;
 }
 
