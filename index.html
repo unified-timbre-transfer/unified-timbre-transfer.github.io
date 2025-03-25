@@ -1,41 +1,162 @@
 <!doctype html>
 <head>
-<title>Unified Timbre Transfer</title>
-<meta name="viewport" content="width=900, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" href="index.css">
+    <title>Unified Timbre Transfer</title>
+    <meta name="viewport" content="width=900, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <style>
+        #audio-comparison {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #target-selector {
+            margin-bottom: 20px;
+        }
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .audio-grid div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+        .audio-grid strong {
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+        .audio-grid audio {
+            max-width: 100%;
+            width: 100%;
+        }
+        #instrument-select {
+            padding: 5px;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
-<div id="content">
-<h1>Unified Timbre Transfer<small> <a href="" target="_blank">[arXiv]</a></small></h1>
-<h2>A Compact Model for Real-Time Multi-Instrument Sound Morphing</h2>
-    
-<div id="authors">
-    Anonymous Authors
-</div>
+    <div id="content">
+        <!-- Previous content remains the same -->
+        <h1>Unified Timbre Transfer<small> <a href="" target="_blank">[arXiv]</a></small></h1>
+        <h2>A Compact Model for Real-Time Multi-Instrument Sound Morphing</h2>
+        
+        <div id="authors">
+            Anonymous Authors
+        </div>
 
-<h3 id="abstract">Abstract</h3>
+        <h3 id="abstract">Abstract</h3>
 
-<p>Recent advances in transformer-and diffusion-based deep-generative models have significantly impacted the field of music and audio synthesis.
-  However, controllable and real-time interactive models, such as those used for timbre transfer in music production,
-  remain largely dominated by auto-encoders and generative adversarial networks.
-  In pursuit of efficient and flexible timbre morphing and multi-instrument timbre transfer, we propose a simplified modeling approach,
-  utilizing an upsampled two-dimensional timbre space in conjunction with engineered and instrument-dependent, excitation signals.
-  Our model enables any-to-many timbre transfer with precise control over timbre, pitch, and loudness, while also allowing for seamless interpolation between instruments,
-  eliminating the need for separate model training. We achieve performance comparable to specialized models, while supporting 44.1 kHz generation,
-  making it highly relevant for the broader creative music community.</p>
-<p></p>
+        <p>Recent advances in transformer-and diffusion-based deep-generative models have significantly impacted the field of music and audio synthesis.
+        However, controllable and real-time interactive models, such as those used for timbre transfer in music production,
+        remain largely dominated by auto-encoders and generative adversarial networks.
+        In pursuit of efficient and flexible timbre morphing and multi-instrument timbre transfer, we propose a simplified modeling approach,
+        utilizing an upsampled two-dimensional timbre space in conjunction with engineered and instrument-dependent, excitation signals.
+        Our model enables any-to-many timbre transfer with precise control over timbre, pitch, and loudness, while also allowing for seamless interpolation between instruments,
+        eliminating the need for separate model training. We achieve performance comparable to specialized models, while supporting 44.1 kHz generation,
+        making it highly relevant for the broader creative music community.</p>
+        <p></p>
 
-<br>
-<img src="pipeline-transparent.png">
-<br>
-    
-<h3>Background</h3>
+        <br>
+        <img src="pipeline-transparent.png">
+        <br>
+        
+        <h3>Background</h3>
 
-<p>
-    We introduce a novel, monophonic, multi-instrument timbre-transfer framework that improves flexibility,
-    control, and real-time performance while simplifying the generation process. Inspired by both <a href="https://magenta.tensorflow.org/ddsp" target="_blank">DDSP</a>
-    and <a href="https://forum.ircam.fr/projects/detail/rave/" target="_blank">RAVE</a>, our approach uses a generator conditioned on a perceptual timbre space,
-    acting as a neural filter that processes an instrument-dependent excitation signal.
-</p>
+        <p>
+            We introduce a novel, monophonic, multi-instrument timbre-transfer framework that improves flexibility,
+            control, and real-time performance while simplifying the generation process. Inspired by both <a href="https://magenta.tensorflow.org/ddsp" target="_blank">DDSP</a>
+            and <a href="https://forum.ircam.fr/projects/detail/rave/" target="_blank">RAVE</a>, our approach uses a generator conditioned on a perceptual timbre space,
+            acting as a neural filter that processes an instrument-dependent excitation signal.
+        </p>
 
+        <h3>Audio Comparison</h3>
+        <div id="audio-comparison">
+            <div id="target-selector">
+                <label for="instrument-select">Select Target Instrument: </label>
+                <select id="instrument-select">
+                    <option value="piano">Piano</option>
+                    <option value="violin">Violin</option>
+                    <option value="trumpet">Trumpet</option>
+                    <option value="saxophone">Saxophone</option>
+                    <option value="flute">Flute</option>
+                    <option value="clarinet">Clarinet</option>
+                    <option value="cello">Cello</option>
+                    <option value="guitar">Guitar</option>
+                    <option value="oboe">Oboe</option>
+                    <option value="bassoon">Bassoon</option>
+                </select>
+            </div>
+            
+            <div class="audio-grid" id="audio-grid">
+                <div>
+                    <strong>Input</strong>
+                    <audio id="input-audio" controls>
+                        <source src="audio/input-default.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div>
+                    <strong>Target</strong>
+                    <audio id="target-audio" controls>
+                        <source src="audio/target-piano.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div>
+                    <strong>Model 1</strong>
+                    <audio id="model1-audio" controls>
+                        <source src="audio/model1-piano.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div>
+                    <strong>Model 2</strong>
+                    <audio id="model2-audio" controls>
+                        <source src="audio/model2-piano.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div>
+                    <strong>Model 3</strong>
+                    <audio id="model3-audio" controls>
+                        <source src="audio/model3-piano.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div>
+                    <strong>Model 4</strong>
+                    <audio id="model4-audio" controls>
+                        <source src="audio/model4-piano.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+        </div>
 
+        <script>
+            document.getElementById('instrument-select').addEventListener('change', function() {
+                const selectedInstrument = this.value;
+                
+                // Update audio sources based on selected instrument
+                const audioSources = [
+                    { id: 'target-audio', path: `audio/target-${selectedInstrument}.wav` },
+                    { id: 'model1-audio', path: `audio/model1-${selectedInstrument}.wav` },
+                    { id: 'model2-audio', path: `audio/model2-${selectedInstrument}.wav` },
+                    { id: 'model3-audio', path: `audio/model3-${selectedInstrument}.wav` },
+                    { id: 'model4-audio', path: `audio/model4-${selectedInstrument}.wav` }
+                ];
+
+                audioSources.forEach(source => {
+                    const audioElement = document.getElementById(source.id);
+                    audioElement.src = source.path;
+                    audioElement.load(); // Reload the audio source
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
