@@ -7,7 +7,6 @@
 <body>
 <div id="content">
 <h1>Unified Timbre Transfer<small> <a href="https://arxiv.org/abs/1811.00223" target="_blank">[arXiv]</a></small></h1>
-
 <h2>A Compact Model for Real-Time Multi-Instrument Sound Morphing</h2>
     
 <div id="authors">
@@ -24,7 +23,16 @@
   Our model enables any-to-many timbre transfer with precise control over timbre, pitch, and loudness, while also allowing for seamless interpolation between instruments,
   eliminating the need for separate model training. We achieve performance comparable to specialized models, while supporting 44.1 kHz generation,
   making it highly relevant for the broader creative music community.</p>
-
 <p></p>
+
+<img src="model-pipeline.png" style="width: 800;">
+<h3>Motivation</h3>
+
+<p>
+    We introduce a novel, monophonic, multi-instrument timbre-transfer framework that improves flexibility,
+    control, and real-time performance while simplifying the generation process. Inspired by both <a href="https://magenta.tensorflow.org/ddsp" target="_blank">DDSP</a>
+    and <a href="https://forum.ircam.fr/projects/detail/rave/" target="_blank">RAVE</a>, our approach uses a generator conditioned on a perceptual timbre space,
+    acting as a neural filter that processes an instrument-dependent excitation signal.
+</p>
 
 
