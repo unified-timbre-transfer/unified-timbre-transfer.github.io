@@ -117,6 +117,7 @@
         
         <script>
         // Audio track configurations
+        // Audio track configurations
         const audioTracks = [
             { 
                 trackName: '210026_1_violin', 
@@ -154,9 +155,14 @@
             return audioElement;
         }
         
+        // Function to capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
-            console.log('Updating audio tracks for:', selectedInstrument);
+            const capitalizedInstrument = capitalizeFirstLetter(selectedInstrument);
         
             const containers = [
                 'input-audio-container', 
@@ -188,20 +194,11 @@
                     // Construct the file path
                     const basePath = 'audio/coco-ablation';
                     const setting = settings[index];
-                    const fileName = `random_${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument.charAt(0).toUpperCase() + selectedInstrument.slice(1)}.wav`;
-                    const fullPath = `${basePath}/${setting}/${selectedInstrument.charAt(0).toUpperCase() + selectedInstrument.slice(1)}/${fileName}`;
-        
-                    console.log(`Creating audio for ${containerId}:`, fullPath);
+                    const fileName = `random_${track.trackName}_${track.sourceInstrument}_to_${capitalizedInstrument}.wav`;
+                    const fullPath = `${basePath}/${setting}/${capitalizedInstrument}/${fileName}`;
         
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
-                    
-                    // Add error logging
-                    audioElement.addEventListener('error', (e) => {
-                        console.error('Audio element error:', e);
-                        console.error('Source:', audioElement.src);
-                    });
-        
                     container.appendChild(audioElement);
                 });
             });
@@ -215,7 +212,7 @@
         
         // Initial load
         document.addEventListener('DOMContentLoaded', () => {
-            updateAudioTracks('bassoon');
+            updateAudioTracks('Bassoon');
         });
         </script>
     </div>
