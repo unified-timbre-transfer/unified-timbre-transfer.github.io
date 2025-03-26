@@ -137,6 +137,7 @@
             </div>
         </div>
 
+
         <script>
             document.getElementById('instrument-select').addEventListener('change', function() {
                 const selectedInstrument = this.value;
@@ -154,10 +155,12 @@
                     { id: 'w-enc-audio', path: `${basePath}/${setting}/w-enc/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` }
                 ];
         
+                // Loop through each audio element and update its source
                 audioSources.forEach(source => {
                     const audioElement = document.getElementById(source.id);
-                    audioElement.querySelector('source').src = source.path;
-                    audioElement.load(); // Reload the audio source
+                    const sourceTag = audioElement.querySelector('source');
+                    sourceTag.src = source.path;
+                    audioElement.load(); // Reload the updated audio source
                 });
             });
         </script>
