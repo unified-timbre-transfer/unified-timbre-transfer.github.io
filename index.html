@@ -156,6 +156,8 @@
         
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
+            console.log('Updating audio tracks for:', selectedInstrument);
+        
             const containers = [
                 'input-audio-container', 
                 'final-audio-container', 
@@ -189,8 +191,17 @@
                     const fileName = `random_${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument.charAt(0).toUpperCase() + selectedInstrument.slice(1)}.wav`;
                     const fullPath = `${basePath}/${setting}/${selectedInstrument}/${fileName}`;
         
+                    console.log(`Creating audio for ${containerId}:`, fullPath);
+        
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
+                    
+                    // Add error logging
+                    audioElement.addEventListener('error', (e) => {
+                        console.error('Audio element error:', e);
+                        console.error('Source:', audioElement.src);
+                    });
+        
                     container.appendChild(audioElement);
                 });
             });
