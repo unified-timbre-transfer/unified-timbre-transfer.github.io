@@ -107,30 +107,30 @@
                     </audio>
                 </div>
                 <div>
-                    <strong>Model 1</strong>
-                    <audio id="model1-audio" controls>
-                        <source src="audio/model1-bassoon.wav" type="audio/wav">
+                    <strong>Proposed</strong>
+                    <audio id="final-audio" controls>
+                        <source src="audio/coco-ablation/final/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
                 <div>
-                    <strong>Model 2</strong>
-                    <audio id="model2-audio" controls>
-                        <source src="audio/model2-bassoon.wav" type="audio/wav">
+                    <strong>No Excitation</strong>
+                    <audio id="no-ex-audio" controls>
+                        <source src="audio/coco-ablation/no-ex/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
                 <div>
-                    <strong>Model 3</strong>
-                    <audio id="model3-audio" controls>
-                        <source src="audio/model3-bassoon.wav" type="audio/wav">
+                    <strong>No Harmonics</strong>
+                    <audio id="no-harms-audio" controls>
+                        <source src="audio/coco-ablation/no-harms/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
                 <div>
-                    <strong>Model 4</strong>
-                    <audio id="model4-audio" controls>
-                        <source src="audio/model4-bassoon.wav" type="audio/wav">
+                    <strong>With Encoder</strong>
+                    <audio id="w-enc-audio" controls>
+                        <source src="audio/coco-ablation/w-enc/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
@@ -140,19 +140,23 @@
         <script>
             document.getElementById('instrument-select').addEventListener('change', function() {
                 const selectedInstrument = this.value;
-                
-                // Update audio sources based on selected instrument
+                const basePath = "audio";  // Root audio folder
+                const setting = "coco-ablation"; // Assuming a fixed setting folder
+                const model = "model";     // Assuming a fixed model folder
+                const filePrefix = "random_track210026_1_violin_Violin_to_"; // Fixed prefix
+        
+                // Update audio sources dynamically
                 const audioSources = [
-                    { id: 'target-audio', path: `audio/target-${selectedInstrument}.wav` },
-                    { id: 'model1-audio', path: `audio/model1-${selectedInstrument}.wav` },
-                    { id: 'model2-audio', path: `audio/model2-${selectedInstrument}.wav` },
-                    { id: 'model3-audio', path: `audio/model3-${selectedInstrument}.wav` },
-                    { id: 'model4-audio', path: `audio/model4-${selectedInstrument}.wav` }
+                    { id: 'target-audio', path: `${basePath}/${setting}/${model}/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                    { id: 'final-audio', path: `${basePath}/${setting}/final/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                    { id: 'no-ex-audio', path: `${basePath}/${setting}/no-ex/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                    { id: 'no-harms-audio', path: `${basePath}/${setting}/no-harms/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                    { id: 'w-enc-audio', path: `${basePath}/${setting}/w-enc/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` }
                 ];
-
+        
                 audioSources.forEach(source => {
                     const audioElement = document.getElementById(source.id);
-                    audioElement.src = source.path;
+                    audioElement.querySelector('source').src = source.path;
                     audioElement.load(); // Reload the audio source
                 });
             });
