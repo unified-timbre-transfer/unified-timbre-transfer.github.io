@@ -141,6 +141,8 @@
         <script>
             document.getElementById('instrument-select').addEventListener('change', function() {
             const selectedInstrument = this.value;
+            console.log('Selected instrument:', selectedInstrument);
+        
             const basePath = "audio";  // Root audio folder
             const setting = "coco-ablation"; // Setting folder
             const filePrefix = "random_track210481_3_clarinet_Clarinet_to_"; // Prefix from the original code
@@ -157,8 +159,12 @@
             audioSources.forEach(source => {
                 const audioElement = document.getElementById(source.id);
                 const sourceTag = audioElement.querySelector('source');
+                
+                console.log(`Updating ${source.id}:`, source.path);
+                
                 sourceTag.src = source.path;
-                audioElement.load(); // Reload the updated audio source
+                audioElement.load(); 
+                audioElement.pause(); // Ensure any current playback is stopped
             });
         });
         </script>
