@@ -93,10 +93,6 @@
             
             <div class="audio-grid" id="audio-grid">
                 <div>
-                    <strong>Input</strong>
-                    <div id="input-audio-container"></div>
-                </div>
-                <div>
                     <strong>Proposed</strong>
                     <div id="final-audio-container"></div>
                 </div>
@@ -157,7 +153,6 @@
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
             const containers = [
-                'input-audio-container', 
                 'final-audio-container', 
                 'no-ex-audio-container', 
                 'no-harms-audio-container', 
@@ -165,7 +160,6 @@
             ];
         
             const settings = [
-                'input', 
                 'final', 
                 'no-ex', 
                 'no-harms', 
