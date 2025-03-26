@@ -94,78 +94,117 @@
             <div class="audio-grid" id="audio-grid">
                 <div>
                     <strong>Input</strong>
-                    <audio id="input-audio" controls>
-                        <source src="audio/input-default.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-                <div>
-                    <strong>Target</strong>
-                    <audio id="target-audio" controls>
-                        <source src="audio/target-bassoon.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <div id="input-audio-container"></div>
                 </div>
                 <div>
                     <strong>Proposed</strong>
-                    <audio id="final-audio" controls>
-                        <source src="audio/coco-ablation/final/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <div id="final-audio-container"></div>
                 </div>
                 <div>
                     <strong>No Excitation</strong>
-                    <audio id="no-ex-audio" controls>
-                        <source src="audio/coco-ablation/no-ex/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <div id="no-ex-audio-container"></div>
                 </div>
                 <div>
                     <strong>No Harmonics</strong>
-                    <audio id="no-harms-audio" controls>
-                        <source src="audio/coco-ablation/no-harms/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <div id="no-harms-audio-container"></div>
                 </div>
                 <div>
                     <strong>With Encoder</strong>
-                    <audio id="w-enc-audio" controls>
-                        <source src="audio/coco-ablation/w-enc/Bassoon/random_track210481_3_clarinet_Clarinet_to_Bassoon.wav" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <div id="w-enc-audio-container"></div>
                 </div>
             </div>
         </div>
-
-
+        
         <script>
-            document.getElementById('instrument-select').addEventListener('change', function() {
-            const selectedInstrument = this.value;
-            console.log('Selected instrument:', selectedInstrument);
+        // Audio track configurations
+        const audioTracks = [
+            { 
+                trackName: '210026_1_violin', 
+                sourceInstrument: 'Violin' 
+            },
+            { 
+                trackName: '210040_1_trumpet', 
+                sourceInstrument: 'Trumpet' 
+            },
+            { 
+                trackName: '210052_4_bassoon', 
+                sourceInstrument: 'Bassoon' 
+            },
+            { 
+                trackName: '210481_3_clarinet', 
+                sourceInstrument: 'Clarinet' 
+            },
+            { 
+                trackName: '210765_2_saxophone', 
+                sourceInstrument: 'Saxophone' 
+            }
+        ];
         
-            const basePath = "audio";  // Root audio folder
-            const setting = "coco-ablation"; // Setting folder
-            const filePrefix = "random_track210481_3_clarinet_Clarinet_to_"; // Prefix from the original code
+        // Function to create audio elements
+        function createAudioElement(src) {
+            const audioElement = document.createElement('audio');
+            audioElement.controls = true;
+            audioElement.style.marginBottom = '10px';
+            
+            const sourceElement = document.createElement('source');
+            sourceElement.type = 'audio/wav';
+            sourceElement.src = src;
+            
+            audioElement.appendChild(sourceElement);
+            return audioElement;
+        }
         
-            // Update audio sources dynamically
-            const audioSources = [
-                { id: 'final-audio', path: `${basePath}/${setting}/final/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                { id: 'no-ex-audio', path: `${basePath}/${setting}/no-ex/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                { id: 'no-harms-audio', path: `${basePath}/${setting}/no-harms/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                { id: 'w-enc-audio', path: `${basePath}/${setting}/w-enc/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` }
+        // Function to update audio tracks
+        function updateAudioTracks(selectedInstrument) {
+            const containers = [
+                'input-audio-container', 
+                'final-audio-container', 
+                'no-ex-audio-container', 
+                'no-harms-audio-container', 
+                'w-enc-audio-container'
             ];
         
-            // Loop through each audio element and update its source
-            audioSources.forEach(source => {
-                const audioElement = document.getElementById(source.id);
-                const sourceTag = audioElement.querySelector('source');
-                
-                console.log(`Updating ${source.id}:`, source.path);
-                
-                sourceTag.src = source.path;
-                audioElement.load(); 
-                audioElement.pause(); // Ensure any current playback is stopped
+            const settings = [
+                'input', 
+                'final', 
+                'no-ex', 
+                'no-harms', 
+                'w-enc'
+            ];
+        
+            // Clear existing audio elements
+            containers.forEach(containerId => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
             });
+        
+            // Add new audio elements for each track
+            audioTracks.forEach(track => {
+                containers.forEach((containerId, index) => {
+                    const container = document.getElementById(containerId);
+                    
+                    // Construct the file path
+                    const basePath = 'audio/coco-ablation';
+                    const setting = settings[index];
+                    const fileName = `random_${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument.charAt(0).toUpperCase() + selectedInstrument.slice(1)}.wav`;
+                    const fullPath = `${basePath}/${setting}/${selectedInstrument}/${fileName}`;
+        
+                    // Create and append audio element
+                    const audioElement = createAudioElement(fullPath);
+                    container.appendChild(audioElement);
+                });
+            });
+        }
+        
+        // Add event listener to instrument selector
+        document.getElementById('instrument-select').addEventListener('change', function() {
+            const selectedInstrument = this.value;
+            updateAudioTracks(selectedInstrument);
+        });
+        
+        // Initial load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAudioTracks('bassoon');
         });
         </script>
     </div>
