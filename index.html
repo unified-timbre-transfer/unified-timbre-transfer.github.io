@@ -199,7 +199,7 @@
                         fullPath = `${basePath}/${setting}/${track.trackName}.wav`;
                     } else if (containerId === 'target-audio-container') {
                         // Target audio follows the new structure
-                        fullPath = `${basePath}/${setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
+                        fullPath = `${basePath}/${setting}/${selectedInstrument}/target.wav`;
                     } else {
                         // Other audio tracks remain the same
                         fullPath = `${basePath}/${setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
