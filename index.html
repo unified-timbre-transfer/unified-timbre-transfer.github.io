@@ -140,29 +140,27 @@
 
         <script>
             document.getElementById('instrument-select').addEventListener('change', function() {
-                const selectedInstrument = this.value;
-                const basePath = "audio";  // Root audio folder
-                const setting = "coco-ablation"; // Assuming a fixed setting folder
-                const model = "model";     // Assuming a fixed model folder
-                const filePrefix = "random_track210026_1_violin_Violin_to_"; // Fixed prefix
+            const selectedInstrument = this.value;
+            const basePath = "audio";  // Root audio folder
+            const setting = "coco-ablation"; // Setting folder
+            const filePrefix = "random_track210481_3_clarinet_Clarinet_to_"; // Prefix from the original code
         
-                // Update audio sources dynamically
-                const audioSources = [
-                    { id: 'target-audio', path: `${basePath}/${setting}/${model}/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                    { id: 'final-audio', path: `${basePath}/${setting}/final/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                    { id: 'no-ex-audio', path: `${basePath}/${setting}/no-ex/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                    { id: 'no-harms-audio', path: `${basePath}/${setting}/no-harms/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
-                    { id: 'w-enc-audio', path: `${basePath}/${setting}/w-enc/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` }
-                ];
+            // Update audio sources dynamically
+            const audioSources = [
+                { id: 'final-audio', path: `${basePath}/${setting}/final/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                { id: 'no-ex-audio', path: `${basePath}/${setting}/no-ex/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                { id: 'no-harms-audio', path: `${basePath}/${setting}/no-harms/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` },
+                { id: 'w-enc-audio', path: `${basePath}/${setting}/w-enc/${selectedInstrument}/${filePrefix}${selectedInstrument}.wav` }
+            ];
         
-                // Loop through each audio element and update its source
-                audioSources.forEach(source => {
-                    const audioElement = document.getElementById(source.id);
-                    const sourceTag = audioElement.querySelector('source');
-                    sourceTag.src = source.path;
-                    audioElement.load(); // Reload the updated audio source
-                });
+            // Loop through each audio element and update its source
+            audioSources.forEach(source => {
+                const audioElement = document.getElementById(source.id);
+                const sourceTag = audioElement.querySelector('source');
+                sourceTag.src = source.path;
+                audioElement.load(); // Reload the updated audio source
             });
+        });
         </script>
     </div>
 </body>
