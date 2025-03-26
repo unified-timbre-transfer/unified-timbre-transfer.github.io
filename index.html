@@ -148,19 +148,13 @@
         function createAudioElement(src) {
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
+            audioElement.style.marginBottom = '10px';
             
-            // Add multiple source types
-            const mp3Source = document.createElement('source');
-            mp3Source.src = src.replace('.wav', '.mp3');
-            mp3Source.type = 'audio/mpeg';
+            const sourceElement = document.createElement('source');
+            sourceElement.type = 'audio/wav';
+            sourceElement.src = src;
             
-            const wavSource = document.createElement('source');
-            wavSource.src = src;
-            wavSource.type = 'audio/wav';
-            
-            audioElement.appendChild(mp3Source);
-            audioElement.appendChild(wavSource);
-            
+            audioElement.appendChild(sourceElement);
             return audioElement;
         }
         
