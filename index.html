@@ -93,6 +93,14 @@
             
             <div class="audio-grid" id="audio-grid">
                 <div>
+                    <strong>Input</strong>
+                    <div id="input-audio-container"></div>
+                </div>
+                <div>
+                    <strong>Target</strong>
+                    <div id="target-audio-container"></div>
+                </div>
+                <div>
                     <strong>Proposed</strong>
                     <div id="final-audio-container"></div>
                 </div>
@@ -153,6 +161,8 @@
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
             const containers = [
+                'input-audio-container',
+                'target-audio-container',
                 'final-audio-container', 
                 'no-ex-audio-container', 
                 'no-harms-audio-container', 
@@ -160,6 +170,8 @@
             ];
         
             const settings = [
+                'input',
+                'targets',
                 'final', 
                 'no-ex', 
                 'no-harms', 
@@ -180,8 +192,18 @@
                     // Construct the file path
                     const basePath = 'audio/coco-ablation';
                     const setting = settings[index];
-                    const fileName = `random_${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
-                    const fullPath = `${basePath}/${setting}/${selectedInstrument}/${fileName}`;
+                    
+                    let fullPath;
+                    if (containerId === 'input-audio-container') {
+                        // Input audio has a different path structure
+                        fullPath = `${basePath}/${setting}/${track.trackName}.wav`;
+                    } else if (containerId === 'target-audio-container') {
+                        // Target audio follows the new structure
+                        fullPath = `${basePath}/${setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
+                    } else {
+                        // Other audio tracks remain the same
+                        fullPath = `${basePath}/${setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
+                    }
         
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
