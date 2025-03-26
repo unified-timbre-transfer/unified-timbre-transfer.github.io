@@ -148,7 +148,7 @@
         function createAudioElement(src) {
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
-            audioElement.style.marginBottom = '10px';
+            audioElement.preload = 'auto'; // or 'metadata'
             
             const sourceElement = document.createElement('source');
             sourceElement.type = 'audio/wav';
@@ -160,54 +160,35 @@
         
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
-            const containers = [
-                'input-audio-container',
-                'target-audio-container',
-                'final-audio-container', 
-                'no-ex-audio-container', 
-                'no-harms-audio-container', 
-                'w-enc-audio-container'
-            ];
-        
-            const settings = [
-                'input',
-                'targets',
-                'final', 
-                'no-ex', 
-                'no-harms', 
-                'w-enc'
-            ];
-        
-            // Clear existing audio elements
-            containers.forEach(containerId => {
-                const container = document.getElementById(containerId);
-                container.innerHTML = '';
-            });
-        
-            // Add new audio elements for each track
             audioTracks.forEach(track => {
                 containers.forEach((containerId, index) => {
                     const container = document.getElementById(containerId);
                     
-                    // Construct the file path
-                    const basePath = 'audio/coco-ablation';
-                    const setting = settings[index];
+                    let fullPath = `${basePath}/${settings[index]}/${containerId === 'target-audio-container' ? selectedInstrument : ''}/${track.trackName}${containerId !== 'input-audio-container' ? `_${track.sourceInstrument}_to_${selectedInstrument}` : ''}.wav`;
                     
-                    let fullPath;
-                    if (containerId === 'input-audio-container') {
-                        // Input audio has a different path structure
-                        fullPath = `${basePath}/${setting}/${track.trackName}.wav`;
-                    } else if (containerId === 'target-audio-container') {
-                        // Target audio follows the new structure
-                        fullPath = `${basePath}/${setting}/${selectedInstrument}/target.wav`;
-                    } else {
-                        // Other audio tracks remain the same
-                        fullPath = `${basePath}/${setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
-                    }
-        
-                    // Create and append audio element
-                    const audioElement = createAudioElement(fullPath);
-                    container.appendChild(audioElement);
+                    console.group(`Audio Track Debug: ${containerId}`);
+                    console.log('Full Path:', fullPath);
+                    console.log('Instrument:', selectedInstrument);
+                    console.log('Track:', track);
+                    
+                    fetch(fullPath)
+                        .then(response => {
+                            console.log('Fetch Response:', response.status, response.statusText);
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.blob();
+                        })
+                        .then(blob => {
+                            console.log('Blob Size:', blob.size);
+                            const audioElement = createAudioElement(fullPath);
+                            container.appendChild(audioElement);
+                        })
+                        .catch(error => {
+                            console.error('Error loading audio:', error);
+                        });
+                    
+                    console.groupEnd();
                 });
             });
         }
