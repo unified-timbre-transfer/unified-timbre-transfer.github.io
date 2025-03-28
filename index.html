@@ -179,16 +179,10 @@
             const container = document.createElement('div');
             
             // Add path label for debugging
-            // Add an empty path label (instead of displaying the track name)
             const pathLabel = document.createElement('div');
+            pathLabel.textContent = src;
             pathLabel.className = 'audio-path-label';
-            pathLabel.textContent = ''; // Keep it empty
             container.appendChild(pathLabel);
-            
-            //const pathLabel = document.createElement('div');
-            //pathLabel.textContent = src;
-            //pathLabel.className = 'audio-path-label';
-            //container.appendChild(pathLabel);
             
             // Create audio element
             const audioElement = document.createElement('audio');
