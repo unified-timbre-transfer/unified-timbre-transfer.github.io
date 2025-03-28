@@ -18,6 +18,19 @@
         }
         #target-selector {
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .target-audio-wrapper {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+        }
+        .target-audio-wrapper strong {
+            margin-right: 10px;
         }
         .audio-grid {
             display: flex;
@@ -30,9 +43,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: calc(20% - 15px); /* Adjusted for 5 columns instead of 6 */
+            width: calc(20% - 15px);
             min-width: 180px;
             box-sizing: border-box;
+            border: 1px solid #ddd;
+            padding: 10px;
         }
         .audio-cell strong {
             margin-bottom: 10px;
@@ -41,10 +56,17 @@
         .audio-cell audio {
             max-width: 100%;
             width: 100%;
+        }   
+        .audio-path-label {
+            font-size: 10px;
+            word-break: break-all;
+            margin-bottom: 5px;
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
         }
         #instrument-select {
             padding: 5px;
-            margin-left: 10px;
         }
         @media (max-width: 1200px) {
             .audio-cell {
@@ -54,6 +76,12 @@
         @media (max-width: 768px) {
             .audio-cell {
                 width: calc(50% - 15px);
+            }
+            .target-audio-wrapper {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+                justify-content: center;
             }
         }
     </style>
@@ -95,19 +123,25 @@
         
         <div id="audio-comparison">
             <div id="target-selector">
-                <label for="instrument-select">Select Target Instrument: </label>
-                <select id="instrument-select">
-                    <option value="Bassoon">Bassoon</option>
-                    <option value="Cello">Cello</option>
-                    <option value="Clarinet">Clarinet</option>
-                    <option value="Flute">Flute</option>
-                    <option value="Horn">Horn</option>
-                    <option value="Oboe">Oboe</option>
-                    <option value="Saxophone">Saxophone</option>
-                    <option value="Trombone">Trombone</option>
-                    <option value="Trumpet">Trumpet</option>
-                    <option value="Violin">Violin</option>
-                </select>
+                <div class="selector-wrapper">
+                    <label for="instrument-select">Select Target Instrument: </label>
+                    <select id="instrument-select">
+                        <option value="Bassoon">Bassoon</option>
+                        <option value="Cello">Cello</option>
+                        <option value="Clarinet">Clarinet</option>
+                        <option value="Flute">Flute</option>
+                        <option value="Horn">Horn</option>
+                        <option value="Oboe">Oboe</option>
+                        <option value="Saxophone">Saxophone</option>
+                        <option value="Trombone">Trombone</option>
+                        <option value="Trumpet">Trumpet</option>
+                        <option value="Violin">Violin</option>
+                    </select>
+                </div>
+                <div class="target-audio-wrapper">
+                    <strong>Target:</strong>
+                    <div id="target-audio-container"></div>
+                </div>
             </div>
             
             <div class="audio-grid" id="audio-grid">
@@ -159,22 +193,63 @@
             }
         ];
         
-        // Function to create audio elements
+        // Function to create audio elements with extensive logging
         function createAudioElement(src) {
+            console.log('Attempting to create audio element with src:', src);
+            
+            // Create audio element container with path label
+            const container = document.createElement('div');
+            
+            // Add path label for debugging
+            const pathLabel = document.createElement('div');
+            pathLabel.textContent = src;
+            pathLabel.className = 'audio-path-label';
+            container.appendChild(pathLabel);
+            
+            // Create audio element
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
-            audioElement.style.marginBottom = '10px';
+            audioElement.style.width = '100%';
             
+            // Create source element
             const sourceElement = document.createElement('source');
             sourceElement.type = 'audio/wav';
             sourceElement.src = src;
             
+            // Log source details
+            console.log('Source element details:', {
+                type: sourceElement.type,
+                src: sourceElement.src
+            });
+            
+            // Attach error and load event listeners for debugging
+            audioElement.addEventListener('error', (e) => {
+                console.error('Audio element error:', e);
+                container.style.backgroundColor = 'pink';
+            });
+            
+            audioElement.addEventListener('loadedmetadata', () => {
+                console.log('Audio metadata loaded successfully');
+                //container.style.backgroundColor = 'lightgreen';
+            });
+            
+            // Assemble the audio element
             audioElement.appendChild(sourceElement);
-            return audioElement;
+            container.appendChild(audioElement);
+            
+            return container;
         }
         
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
+            // Configuration for the target audio that now appears next to the selector
+            const targetContainer = document.getElementById('target-audio-container');
+            targetContainer.innerHTML = '';
+            const targetPath = `audio/coco-ablation/targets/${selectedInstrument}/target.wav`;
+            const targetAudioElement = createAudioElement(targetPath);
+            targetContainer.appendChild(targetAudioElement);
+            
+            // Configurations for the grid cells (now without the target cell)
             const configurations = [
                 { containerId: 'input-audio-container', setting: 'input' },
                 { containerId: 'final-audio-container', setting: 'final' },
@@ -183,7 +258,7 @@
                 { containerId: 'w-enc-audio-container', setting: 'w-enc' }
             ];
         
-            // Clear existing audio elements
+            // Clear existing audio elements in the grid
             configurations.forEach(config => {
                 const container = document.getElementById(config.containerId);
                 container.innerHTML = '';
@@ -202,6 +277,8 @@
                         fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
                     }
         
+                    console.log('Full path for audio:', fullPath);
+                    
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
                     container.appendChild(audioElement);
