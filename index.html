@@ -193,6 +193,7 @@
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
             audioElement.style.marginBottom = '10px';
+            audioElement.preload = 'auto';
             
             const sourceElement = document.createElement('source');
             sourceElement.type = 'audio/wav';
@@ -202,8 +203,20 @@
             return audioElement;
         }
         
+        // Function to handle errors - check if file exists
+        function handleAudioError(audioElement, fallbackSrc) {
+            audioElement.addEventListener('error', function() {
+                console.warn('Audio failed to load: ' + audioElement.querySelector('source').src);
+                if (fallbackSrc) {
+                    audioElement.querySelector('source').src = fallbackSrc;
+                    audioElement.load();
+                }
+            }, true); // Capture phase to catch errors from source elements
+        }
+        
         // Function to update audio tracks
         function updateAudioTracks(selectedInstrument) {
+            // Settings and their container IDs
             const configurations = [
                 { containerId: 'input-audio-container', setting: 'input' },
                 { containerId: 'final-audio-container', setting: 'final' },
@@ -211,21 +224,23 @@
                 { containerId: 'no-harms-audio-container', setting: 'no-harms' },
                 { containerId: 'w-enc-audio-container', setting: 'w-enc' }
             ];
-        
+            
+            // Base path for audio files
+            const basePath = 'audio/coco-ablation';
+            
             // Clear existing audio elements
             configurations.forEach(config => {
-                const container = document.getElementById(config.containerId);
-                container.innerHTML = '';
+                document.getElementById(config.containerId).innerHTML = '';
             });
             
             // Update target audio (single instance)
             const targetContainer = document.getElementById('single-target-audio-container');
             targetContainer.innerHTML = '';
-            const basePath = 'audio/coco-ablation';
             const targetPath = `${basePath}/targets/${selectedInstrument}/target.wav`;
             const targetAudio = createAudioElement(targetPath);
+            handleAudioError(targetAudio);
             targetContainer.appendChild(targetAudio);
-        
+            
             // Add new audio elements for each track
             audioTracks.forEach(track => {
                 configurations.forEach(config => {
@@ -237,9 +252,10 @@
                     } else {
                         fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
                     }
-        
+                    
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
+                    handleAudioError(audioElement);
                     container.appendChild(audioElement);
                 });
             });
@@ -251,10 +267,19 @@
             updateAudioTracks(selectedInstrument);
         });
         
-        // Initial load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateAudioTracks('Bassoon');
-        });
+        // Initial load - ensure DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    updateAudioTracks('Bassoon');
+                }, 100); // Small delay to ensure everything is ready
+            });
+        } else {
+            // DOM already loaded
+            setTimeout(function() {
+                updateAudioTracks('Bassoon');
+            }, 100);
+        }
         </script>
     </div>
 </body>
