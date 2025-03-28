@@ -118,14 +118,16 @@
                     <option value="Trumpet">Trumpet</option>
                     <option value="Violin">Violin</option>
                 </select>
-                <div id="target-audio-container"></div>
             </div>
             
-            <!-- Audio Grid (Excluding Target) -->
             <div class="audio-grid" id="audio-grid">
                 <div class="audio-cell" id="input-audio-cell">
                     <strong>Input</strong>
                     <div id="input-audio-container"></div>
+                </div>
+                <div class="audio-cell" id="target-audio-cell">
+                    <strong>Target</strong>
+                    <div id="target-audio-container"></div>
                 </div>
                 <div class="audio-cell" id="final-audio-cell">
                     <strong>Proposed</strong>
@@ -144,6 +146,7 @@
                     <div id="w-enc-audio-container"></div>
                 </div>
             </div>
+        </div>
         
         <script>
         // Audio track configurations
@@ -221,19 +224,14 @@
         function updateAudioTracks(selectedInstrument) {
             const configurations = [
                 { containerId: 'input-audio-container', setting: 'input' },
+                { containerId: 'target-audio-container', setting: 'targets' },
                 { containerId: 'final-audio-container', setting: 'final' },
                 { containerId: 'no-ex-audio-container', setting: 'no-ex' },
                 { containerId: 'no-harms-audio-container', setting: 'no-harms' },
                 { containerId: 'w-enc-audio-container', setting: 'w-enc' }
             ];
         
-            // Clear and update target audio separately
-            const targetContainer = document.getElementById('target-audio-container');
-            targetContainer.innerHTML = '';
-            const targetPath = `audio/coco-ablation/targets/${selectedInstrument}/target.wav`;
-            targetContainer.appendChild(createAudioElement(targetPath));
-        
-            // Clear and update other audio elements
+            // Clear existing audio elements
             configurations.forEach(config => {
                 const container = document.getElementById(config.containerId);
                 container.innerHTML = '';
@@ -244,8 +242,21 @@
                 configurations.forEach(config => {
                     const container = document.getElementById(config.containerId);
                     const basePath = 'audio/coco-ablation';
-                    const fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
-                    container.appendChild(createAudioElement(fullPath));
+                    
+                    let fullPath;
+                    if (config.setting === 'input') {
+                        fullPath = `${basePath}/${config.setting}/${track.trackName}.wav`;
+                    } else if (config.setting === 'targets') {
+                        fullPath = `${basePath}/${config.setting}/${selectedInstrument}/target.wav`;
+                    } else {
+                        fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
+                    }
+        
+                    console.log('Full path for audio:', fullPath);
+                    
+                    // Create and append audio element
+                    const audioElement = createAudioElement(fullPath);
+                    container.appendChild(audioElement);
                 });
             });
         }
