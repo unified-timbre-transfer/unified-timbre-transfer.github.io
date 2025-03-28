@@ -46,6 +46,12 @@
             max-width: 100%;
             width: 100%;
         }
+        .audio-path-label {
+            font-size: 10px;
+            word-break: break-all;
+            margin-bottom: 5px;
+            color: #666;
+        }
         #instrument-select {
             padding: 5px;
             margin-left: 10px;
@@ -167,22 +173,51 @@
             }
         ];
         
-        // Function to create audio elements
+        // Function to create audio elements with extensive logging
         function createAudioElement(src) {
-            // Create audio element
+            console.log('Attempting to create audio element with src:', src);
+            
+            // Create audio element container with path label
+            const container = document.createElement('div');
+            container.style.width = '100%';
+            
+            // Create audio element with multiple sources for better compatibility
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
             audioElement.style.width = '100%';
             
-            // Create source element
-            const sourceElement = document.createElement('source');
-            sourceElement.type = 'audio/wav';
-            sourceElement.src = src;
+            // Create multiple source elements for different browser support
+            const sourceWav = document.createElement('source');
+            sourceWav.type = 'audio/wav';
+            sourceWav.src = src;
+            
+            const sourceMp3 = document.createElement('source');
+            sourceMp3.type = 'audio/mpeg';
+            sourceMp3.src = src.replace('.wav', '.mp3');
+            
+            // Attach error and load event listeners for debugging
+            audioElement.addEventListener('error', (e) => {
+                console.error('Audio element error:', e);
+                container.style.backgroundColor = 'pink';
+            });
+            
+            audioElement.addEventListener('loadedmetadata', () => {
+                console.log('Audio metadata loaded successfully');
+                container.style.backgroundColor = 'lightgreen';
+            });
+            
+            // Fallback text
+            const fallbackText = document.createElement('p');
+            fallbackText.textContent = 'Your browser does not support the audio element.';
             
             // Assemble the audio element
-            audioElement.appendChild(sourceElement);
+            audioElement.appendChild(sourceWav);
+            audioElement.appendChild(sourceMp3);
+            audioElement.appendChild(fallbackText);
             
-            return audioElement;
+            container.appendChild(audioElement);
+            
+            return container;
         }
         
         // Function to update audio tracks
@@ -216,6 +251,8 @@
                     } else {
                         fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
                     }
+        
+                    console.log('Full path for audio:', fullPath);
                     
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
