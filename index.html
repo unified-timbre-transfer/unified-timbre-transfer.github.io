@@ -33,8 +33,10 @@
             width: calc(16.666% - 15px);
             min-width: 180px;
             box-sizing: border-box;
-            border: 1px solid #ddd;
-            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .audio-cell strong {
             margin-bottom: 10px;
@@ -43,12 +45,6 @@
         .audio-cell audio {
             max-width: 100%;
             width: 100%;
-        }
-        .audio-path-label {
-            font-size: 10px;
-            word-break: break-all;
-            margin-bottom: 5px;
-            color: #666;
         }
         #instrument-select {
             padding: 5px;
@@ -171,19 +167,8 @@
             }
         ];
         
-        // Function to create audio elements with extensive logging
+        // Function to create audio elements
         function createAudioElement(src) {
-            console.log('Attempting to create audio element with src:', src);
-            
-            // Create audio element container with path label
-            const container = document.createElement('div');
-            
-            // Add path label for debugging
-            const pathLabel = document.createElement('div');
-            pathLabel.textContent = src;
-            pathLabel.className = 'audio-path-label';
-            container.appendChild(pathLabel);
-            
             // Create audio element
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
@@ -194,28 +179,10 @@
             sourceElement.type = 'audio/wav';
             sourceElement.src = src;
             
-            // Log source details
-            console.log('Source element details:', {
-                type: sourceElement.type,
-                src: sourceElement.src
-            });
-            
-            // Attach error and load event listeners for debugging
-            audioElement.addEventListener('error', (e) => {
-                console.error('Audio element error:', e);
-                container.style.backgroundColor = 'pink';
-            });
-            
-            audioElement.addEventListener('loadedmetadata', () => {
-                console.log('Audio metadata loaded successfully');
-                container.style.backgroundColor = 'lightgreen';
-            });
-            
             // Assemble the audio element
             audioElement.appendChild(sourceElement);
-            container.appendChild(audioElement);
             
-            return container;
+            return audioElement;
         }
         
         // Function to update audio tracks
@@ -249,8 +216,6 @@
                     } else {
                         fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
                     }
-        
-                    console.log('Full path for audio:', fullPath);
                     
                     // Create and append audio element
                     const audioElement = createAudioElement(fullPath);
