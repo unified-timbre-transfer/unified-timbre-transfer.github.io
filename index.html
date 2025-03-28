@@ -33,10 +33,8 @@
             width: calc(16.666% - 15px);
             min-width: 180px;
             box-sizing: border-box;
-            background-color: #f4f4f4;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            padding: 10px;
         }
         .audio-cell strong {
             margin-bottom: 10px;
@@ -179,21 +177,28 @@
             
             // Create audio element container with path label
             const container = document.createElement('div');
-            container.style.width = '100%';
             
-            // Create audio element with multiple sources for better compatibility
+            // Add path label for debugging
+            //const pathLabel = document.createElement('div');
+            //pathLabel.textContent = src;
+            //pathLabel.className = 'audio-path-label';
+            //container.appendChild(pathLabel);
+            
+            // Create audio element
             const audioElement = document.createElement('audio');
             audioElement.controls = true;
             audioElement.style.width = '100%';
             
-            // Create multiple source elements for different browser support
-            const sourceWav = document.createElement('source');
-            sourceWav.type = 'audio/wav';
-            sourceWav.src = src;
+            // Create source element
+            const sourceElement = document.createElement('source');
+            sourceElement.type = 'audio/wav';
+            sourceElement.src = src;
             
-            const sourceMp3 = document.createElement('source');
-            sourceMp3.type = 'audio/mpeg';
-            sourceMp3.src = src.replace('.wav', '.mp3');
+            // Log source details
+            console.log('Source element details:', {
+                type: sourceElement.type,
+                src: sourceElement.src
+            });
             
             // Attach error and load event listeners for debugging
             audioElement.addEventListener('error', (e) => {
@@ -206,15 +211,8 @@
                 container.style.backgroundColor = 'lightgreen';
             });
             
-            // Fallback text
-            const fallbackText = document.createElement('p');
-            fallbackText.textContent = 'Your browser does not support the audio element.';
-            
             // Assemble the audio element
-            audioElement.appendChild(sourceWav);
-            audioElement.appendChild(sourceMp3);
-            audioElement.appendChild(fallbackText);
-            
+            audioElement.appendChild(sourceElement);
             container.appendChild(audioElement);
             
             return container;
