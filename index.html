@@ -18,6 +18,17 @@
         }
         #target-selector {
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .selector-container {
+            display: flex;
+            align-items: center;
+        }
+        .target-audio-container {
+            width: 250px;
         }
         .audio-grid {
             display: flex;
@@ -30,7 +41,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: calc(16.666% - 15px);
+            width: calc(20% - 15px);
             min-width: 180px;
             box-sizing: border-box;
         }
@@ -46,14 +57,26 @@
             padding: 5px;
             margin-left: 10px;
         }
+        .pipeline-image {
+            max-width: 80%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
         @media (max-width: 1200px) {
             .audio-cell {
                 width: calc(33.333% - 15px);
+            }
+            #target-selector {
+                flex-direction: column;
             }
         }
         @media (max-width: 768px) {
             .audio-cell {
                 width: calc(50% - 15px);
+            }
+            .pipeline-image {
+                max-width: 100%;
             }
         }
     </style>
@@ -79,7 +102,7 @@
         making it highly relevant for the broader creative music community.</p>
 
         <br>
-        <img src="pipeline-transparent.png" alt="Pipeline Diagram" style="max-width: 100%; height: auto;">
+        <img src="pipeline-transparent.png" alt="Pipeline Diagram" class="pipeline-image">
         <br>
         
         <h3>Background</h3>
@@ -95,29 +118,31 @@
         
         <div id="audio-comparison">
             <div id="target-selector">
-                <label for="instrument-select">Select Target Instrument: </label>
-                <select id="instrument-select">
-                    <option value="Bassoon">Bassoon</option>
-                    <option value="Cello">Cello</option>
-                    <option value="Clarinet">Clarinet</option>
-                    <option value="Flute">Flute</option>
-                    <option value="Horn">Horn</option>
-                    <option value="Oboe">Oboe</option>
-                    <option value="Saxophone">Saxophone</option>
-                    <option value="Trombone">Trombone</option>
-                    <option value="Trumpet">Trumpet</option>
-                    <option value="Violin">Violin</option>
-                </select>
+                <div class="selector-container">
+                    <label for="instrument-select">Select Target Instrument: </label>
+                    <select id="instrument-select">
+                        <option value="Bassoon">Bassoon</option>
+                        <option value="Cello">Cello</option>
+                        <option value="Clarinet">Clarinet</option>
+                        <option value="Flute">Flute</option>
+                        <option value="Horn">Horn</option>
+                        <option value="Oboe">Oboe</option>
+                        <option value="Saxophone">Saxophone</option>
+                        <option value="Trombone">Trombone</option>
+                        <option value="Trumpet">Trumpet</option>
+                        <option value="Violin">Violin</option>
+                    </select>
+                </div>
+                <div>
+                    <strong>Target</strong>
+                    <div id="single-target-audio-container" class="target-audio-container"></div>
+                </div>
             </div>
             
             <div class="audio-grid" id="audio-grid">
                 <div class="audio-cell" id="input-audio-cell">
                     <strong>Input</strong>
                     <div id="input-audio-container"></div>
-                </div>
-                <div class="audio-cell" id="target-audio-cell">
-                    <strong>Target</strong>
-                    <div id="target-audio-container"></div>
                 </div>
                 <div class="audio-cell" id="final-audio-cell">
                     <strong>Proposed</strong>
@@ -181,7 +206,6 @@
         function updateAudioTracks(selectedInstrument) {
             const configurations = [
                 { containerId: 'input-audio-container', setting: 'input' },
-                { containerId: 'target-audio-container', setting: 'targets' },
                 { containerId: 'final-audio-container', setting: 'final' },
                 { containerId: 'no-ex-audio-container', setting: 'no-ex' },
                 { containerId: 'no-harms-audio-container', setting: 'no-harms' },
@@ -193,18 +217,23 @@
                 const container = document.getElementById(config.containerId);
                 container.innerHTML = '';
             });
+            
+            // Update target audio (single instance)
+            const targetContainer = document.getElementById('single-target-audio-container');
+            targetContainer.innerHTML = '';
+            const basePath = 'audio/coco-ablation';
+            const targetPath = `${basePath}/targets/${selectedInstrument}/target.wav`;
+            const targetAudio = createAudioElement(targetPath);
+            targetContainer.appendChild(targetAudio);
         
             // Add new audio elements for each track
             audioTracks.forEach(track => {
                 configurations.forEach(config => {
                     const container = document.getElementById(config.containerId);
-                    const basePath = 'audio/coco-ablation';
                     
                     let fullPath;
                     if (config.setting === 'input') {
                         fullPath = `${basePath}/${config.setting}/${track.trackName}.wav`;
-                    } else if (config.setting === 'targets') {
-                        fullPath = `${basePath}/${config.setting}/${selectedInstrument}/target.wav`;
                     } else {
                         fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
                     }
