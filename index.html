@@ -78,6 +78,19 @@
             margin-bottom: 15px;
             text-align: center;
         }
+        /* Add styling for the description text between audio grids */
+        .description-text {
+            margin: 30px 0;
+            text-align: left;
+            padding: 0 20px;
+        }
+        /* Adjust the pipeline image size */
+        .pipeline-image {
+            max-width: 70%;  /* You can adjust this percentage to make it smaller */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
         @media (max-width: 1200px) {
             .audio-cell {
                 width: calc(33.333% - 15px);
@@ -92,6 +105,10 @@
                 margin-left: 0;
                 margin-top: 10px;
                 justify-content: center;
+            }
+            /* Make the image responsive on smaller screens */
+            .pipeline-image {
+                max-width: 100%;
             }
         }
     </style>
@@ -117,7 +134,8 @@
         making it highly relevant for the broader creative music community.</p>
 
         <br>
-        <img src="pipeline-transparent.png" alt="Pipeline Diagram" style="max-width: 100%; height: auto;">
+        <!-- MODIFIED: Added class to control the image size -->
+        <img src="pipeline-transparent.png" alt="Pipeline Diagram" class="pipeline-image">
         <br>
         
         <h3>Background</h3>
@@ -176,6 +194,23 @@
             </div>
         </div>
         
+        <!-- ADDED: Text section between the audio grids -->
+        <div class="description-text">
+            <h3>Comparison of Model Architectures</h3>
+            <p>
+                In the above examples, we compare our proposed approach against three alternative state-of-the-art models for timbre transfer. 
+                Model 1 uses a traditional autoencoder architecture, Model 2 employs a GAN-based approach, while Model 3 utilizes 
+                a diffusion-based generator. Our unified approach (shown in the ablation study below) demonstrates comparable or superior 
+                performance while maintaining real-time capabilities and greater flexibility across instrument types.
+            </p>
+            <p>
+                The ablation study below demonstrates the importance of each component in our proposed architecture. 
+                We examine the effect of removing excitation signals, harmonic processing, and the impact of using an encoder 
+                versus our proposed upsampled timbre space. Each configuration highlights different aspects of timbral quality 
+                and instrument-specific characteristics.
+            </p>
+        </div>
+        
         <!-- ORIGINAL AUDIO GRID SECTION -->
         <div id="audio-comparison" class="comparison-section">
             <div class="comparison-title">Ablation Study</div>
@@ -223,6 +258,23 @@
                     <div id="w-enc-audio-container"></div>
                 </div>
             </div>
+        </div>
+        
+        <!-- ADDED: Additional text section after the ablation study -->
+        <div class="description-text">
+            <h3>Conclusion and Future Work</h3>
+            <p>
+                Our experiments demonstrate that the proposed approach offers a compelling balance between sound quality, 
+                model complexity, and computational efficiency. The ablation study confirms that each component of our 
+                architecture contributes significantly to the overall performance, with the combination of all elements 
+                yielding the most convincing timbre transfer results.
+            </p>
+            <p>
+                Future work will focus on extending the approach to polyphonic inputs, exploring additional instrument 
+                families, and investigating the potential for real-time interactive applications in music production 
+                environments. We also plan to explore methods for further reducing model complexity while maintaining 
+                audio quality at 44.1 kHz.
+            </p>
         </div>
         
         <script>
