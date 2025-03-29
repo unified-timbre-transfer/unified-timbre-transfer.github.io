@@ -12,11 +12,11 @@
             padding: 20px;
             line-height: 1.6;
         }
-        #audio-comparison {
+        #audio-comparison, #new-audio-comparison {
             margin-top: 20px;
             text-align: center;
         }
-        #target-selector {
+        #target-selector, #new-target-selector {
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -65,8 +65,18 @@
             height: 0;
             overflow: hidden;
         }
-        #instrument-select {
+        #instrument-select, #new-instrument-select {
             padding: 5px;
+        }
+        .comparison-section {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .comparison-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
         }
         @media (max-width: 1200px) {
             .audio-cell {
@@ -121,7 +131,54 @@
 
         <h3>Audio Comparison</h3>
         
-        <div id="audio-comparison">
+        <!-- NEW AUDIO GRID SECTION -->
+        <div id="new-audio-comparison" class="comparison-section">
+            <div class="comparison-title">Model Comparison</div>
+            <div id="new-target-selector">
+                <div class="selector-wrapper">
+                    <label for="new-instrument-select">Select Target Instrument: </label>
+                    <select id="new-instrument-select">
+                        <option value="Bassoon">Bassoon</option>
+                        <option value="Cello">Cello</option>
+                        <option value="Clarinet">Clarinet</option>
+                        <option value="Flute">Flute</option>
+                        <option value="Horn">Horn</option>
+                        <option value="Oboe">Oboe</option>
+                        <option value="Saxophone">Saxophone</option>
+                        <option value="Trombone">Trombone</option>
+                        <option value="Trumpet">Trumpet</option>
+                        <option value="Violin">Violin</option>
+                    </select>
+                </div>
+                <div class="target-audio-wrapper">
+                    <strong>Target:</strong>
+                    <div id="new-target-audio-container"></div>
+                </div>
+            </div>
+            
+            <div class="audio-grid" id="new-audio-grid">
+                <div class="audio-cell" id="new-input-audio-cell">
+                    <strong>Input</strong>
+                    <div id="new-input-audio-container"></div>
+                </div>
+                <div class="audio-cell" id="model1-audio-cell">
+                    <strong>Model 1</strong>
+                    <div id="model1-audio-container"></div>
+                </div>
+                <div class="audio-cell" id="model2-audio-cell">
+                    <strong>Model 2</strong>
+                    <div id="model2-audio-container"></div>
+                </div>
+                <div class="audio-cell" id="model3-audio-cell">
+                    <strong>Model 3</strong>
+                    <div id="model3-audio-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ORIGINAL AUDIO GRID SECTION -->
+        <div id="audio-comparison" class="comparison-section">
+            <div class="comparison-title">Ablation Study</div>
             <div id="target-selector">
                 <div class="selector-wrapper">
                     <label for="instrument-select">Select Target Instrument: </label>
@@ -240,7 +297,7 @@
             return container;
         }
         
-        // Function to update audio tracks
+        // Function to update original audio tracks (ablation study)
         function updateAudioTracks(selectedInstrument) {
             // Configuration for the target audio that now appears next to the selector
             const targetContainer = document.getElementById('target-audio-container');
@@ -286,15 +343,67 @@
             });
         }
         
-        // Add event listener to instrument selector
+        // Function to update new audio tracks (model comparison)
+        function updateNewAudioTracks(selectedInstrument) {
+            // Configuration for the target audio
+            const targetContainer = document.getElementById('new-target-audio-container');
+            targetContainer.innerHTML = '';
+            const targetPath = `audio/model-comparison/targets/${selectedInstrument}/target.wav`;
+            const targetAudioElement = createAudioElement(targetPath);
+            targetContainer.appendChild(targetAudioElement);
+            
+            // Configurations for the new grid cells
+            const configurations = [
+                { containerId: 'new-input-audio-container', setting: 'input' },
+                { containerId: 'model1-audio-container', setting: 'model1' },
+                { containerId: 'model2-audio-container', setting: 'model2' },
+                { containerId: 'model3-audio-container', setting: 'model3' }
+            ];
+        
+            // Clear existing audio elements in the grid
+            configurations.forEach(config => {
+                const container = document.getElementById(config.containerId);
+                container.innerHTML = '';
+            });
+        
+            // Add new audio elements for each track
+            audioTracks.forEach(track => {
+                configurations.forEach(config => {
+                    const container = document.getElementById(config.containerId);
+                    const basePath = 'audio/model-comparison';
+                    
+                    let fullPath;
+                    if (config.setting === 'input') {
+                        fullPath = `${basePath}/${config.setting}/${track.trackName}.wav`;
+                    } else {
+                        fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
+                    }
+        
+                    console.log('Full path for new audio:', fullPath);
+                    
+                    // Create and append audio element
+                    const audioElement = createAudioElement(fullPath);
+                    container.appendChild(audioElement);
+                });
+            });
+        }
+        
+        // Add event listener to original instrument selector
         document.getElementById('instrument-select').addEventListener('change', function() {
             const selectedInstrument = this.value;
             updateAudioTracks(selectedInstrument);
         });
         
+        // Add event listener to new instrument selector
+        document.getElementById('new-instrument-select').addEventListener('change', function() {
+            const selectedInstrument = this.value;
+            updateNewAudioTracks(selectedInstrument);
+        });
+        
         // Initial load
         document.addEventListener('DOMContentLoaded', () => {
             updateAudioTracks('Bassoon');
+            updateNewAudioTracks('Bassoon');
         });
         </script>
     </div>
