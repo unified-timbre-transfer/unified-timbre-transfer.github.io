@@ -277,7 +277,7 @@
         </div>
         
         <script>
-        // Audio track configurations - Updated with dataset field
+        // Audio track configurations for ablation study
         const audioTracks = [
             { 
                 trackName: 'random_track210026_1_violin', 
@@ -299,6 +299,15 @@
                 trackName: 'random_track210765_2_saxophone', 
                 sourceInstrument: 'Saxophone' 
             }
+        ];
+        
+        // New simplified track names for model comparison
+        const modelComparisonTracks = [
+            { trackName: 'track1' },
+            { trackName: 'track2' },
+            { trackName: 'track3' },
+            { trackName: 'track4' },
+            { trackName: 'track5' }
         ];
         
         // Function to create audio elements with extensive logging
@@ -394,7 +403,7 @@
             });
         }
         
-        // Function to update new audio tracks (model comparison) with updated paths
+        // Function to update new audio tracks (model comparison) with updated paths and track names
         function updateNewAudioTracks(selectedInstrument, selectedDataset) {
             // Configuration for the target audio
             const targetContainer = document.getElementById('new-target-audio-container');
@@ -417,15 +426,15 @@
                 container.innerHTML = '';
             });
         
-            // Add new audio elements for each track
-            audioTracks.forEach(track => {
+            // Add new audio elements for each track with simplified track names
+            modelComparisonTracks.forEach(track => {
                 configurations.forEach(config => {
                     const container = document.getElementById(config.containerId);
                     
                     let fullPath;
                     if (config.setting === 'input') {
                         // New path structure for input files
-                        fullPath = `inputs/${selectedDataset}/${track.sourceInstrument}/${track.trackName}.wav`;
+                        fullPath = `inputs/${selectedDataset}/${track.trackName}.wav`;
                     } else {
                         // New path structure for model output files
                         fullPath = `model-comparison/${config.setting}/${selectedInstrument}/${selectedDataset}/${track.trackName}.wav`;
