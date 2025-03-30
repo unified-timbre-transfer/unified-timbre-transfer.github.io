@@ -408,7 +408,7 @@
             // Configuration for the target audio
             const targetContainer = document.getElementById('new-target-audio-container');
             targetContainer.innerHTML = '';
-            const targetPath = `targets/${selectedInstrument}/target.wav`;
+            const targetPath = `audio/model-comparison/targets/${selectedInstrument}/target.wav`;
             const targetAudioElement = createAudioElement(targetPath);
             targetContainer.appendChild(targetAudioElement);
             
@@ -434,7 +434,7 @@
                     let fullPath;
                     if (config.setting === 'input') {
                         // New path structure for input files
-                        fullPath = `inputs/${selectedDataset}/${track.trackName}.wav`;
+                        fullPath = `audio/model-comparison/inputs/${selectedDataset}/${track.trackName}.wav`;
                     } else {
                         // New path structure for model output files
                         fullPath = `audio/model-comparison/${config.setting}/${selectedInstrument}/${selectedDataset}/${track.trackName}.wav`;
