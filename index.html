@@ -434,7 +434,7 @@
                     let fullPath;
                     if (config.setting === 'input') {
                         // New path structure for input files
-                        fullPath = `audio/model-comparison/inputs/${selectedDataset}/${track.trackName}.wav`;
+                        fullPath = `audio/model-comparison/inputs/${selectedDataset}/${selectedInstrument}/${track.trackName}.wav`;
                     } else {
                         // New path structure for model output files
                         fullPath = `audio/model-comparison/${config.setting}/${selectedInstrument}/${selectedDataset}/${track.trackName}.wav`;
