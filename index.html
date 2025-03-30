@@ -65,7 +65,7 @@
             height: 0;
             overflow: hidden;
         }
-        #instrument-select, #new-instrument-select {
+        #instrument-select, #new-instrument-select, #dataset-select {
             padding: 5px;
         }
         .comparison-section {
@@ -156,16 +156,15 @@
                 <div class="selector-wrapper">
                     <label for="new-instrument-select">Select Target Instrument: </label>
                     <select id="new-instrument-select">
-                        <option value="Bassoon">Bassoon</option>
-                        <option value="Cello">Cello</option>
-                        <option value="Clarinet">Clarinet</option>
-                        <option value="Flute">Flute</option>
-                        <option value="Horn">Horn</option>
-                        <option value="Oboe">Oboe</option>
-                        <option value="Saxophone">Saxophone</option>
-                        <option value="Trombone">Trombone</option>
                         <option value="Trumpet">Trumpet</option>
                         <option value="Violin">Violin</option>
+                    </select>
+                </div>
+                <div class="selector-wrapper">
+                    <label for="dataset-select">Dataset: </label>
+                    <select id="dataset-select">
+                        <option value="Coco">Coco</option>
+                        <option value="urmp">URMP</option>
                     </select>
                 </div>
                 <div class="target-audio-wrapper">
@@ -278,7 +277,7 @@
         </div>
         
         <script>
-        // Audio track configurations
+        // Audio track configurations - Updated with dataset field
         const audioTracks = [
             { 
                 trackName: 'random_track210026_1_violin', 
@@ -395,12 +394,12 @@
             });
         }
         
-        // Function to update new audio tracks (model comparison)
-        function updateNewAudioTracks(selectedInstrument) {
+        // Function to update new audio tracks (model comparison) with updated paths
+        function updateNewAudioTracks(selectedInstrument, selectedDataset) {
             // Configuration for the target audio
             const targetContainer = document.getElementById('new-target-audio-container');
             targetContainer.innerHTML = '';
-            const targetPath = `audio/model-comparison/targets/${selectedInstrument}/target.wav`;
+            const targetPath = `targets/${selectedInstrument}/target.wav`;
             const targetAudioElement = createAudioElement(targetPath);
             targetContainer.appendChild(targetAudioElement);
             
@@ -422,13 +421,14 @@
             audioTracks.forEach(track => {
                 configurations.forEach(config => {
                     const container = document.getElementById(config.containerId);
-                    const basePath = 'audio/model-comparison';
                     
                     let fullPath;
                     if (config.setting === 'input') {
-                        fullPath = `${basePath}/${config.setting}/${track.trackName}.wav`;
+                        // New path structure for input files
+                        fullPath = `inputs/${selectedDataset}/${track.sourceInstrument}/${track.trackName}.wav`;
                     } else {
-                        fullPath = `${basePath}/${config.setting}/${selectedInstrument}/${track.trackName}_${track.sourceInstrument}_to_${selectedInstrument}.wav`;
+                        // New path structure for model output files
+                        fullPath = `model-comparison/${config.setting}/${selectedInstrument}/${selectedDataset}/${track.trackName}.wav`;
                     }
         
                     console.log('Full path for new audio:', fullPath);
@@ -446,16 +446,23 @@
             updateAudioTracks(selectedInstrument);
         });
         
-        // Add event listener to new instrument selector
+        // Add event listener to new instrument selector and dataset selector
         document.getElementById('new-instrument-select').addEventListener('change', function() {
             const selectedInstrument = this.value;
-            updateNewAudioTracks(selectedInstrument);
+            const selectedDataset = document.getElementById('dataset-select').value;
+            updateNewAudioTracks(selectedInstrument, selectedDataset);
+        });
+        
+        document.getElementById('dataset-select').addEventListener('change', function() {
+            const selectedInstrument = document.getElementById('new-instrument-select').value;
+            const selectedDataset = this.value;
+            updateNewAudioTracks(selectedInstrument, selectedDataset);
         });
         
         // Initial load
         document.addEventListener('DOMContentLoaded', () => {
             updateAudioTracks('Bassoon');
-            updateNewAudioTracks('Bassoon');
+            updateNewAudioTracks('Trumpet', 'Coco');
         });
         </script>
     </div>
